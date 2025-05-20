@@ -26,4 +26,13 @@ public class ContaService {
         }
         return conta.getSaldo();
     }
+
+    public boolean creditar(int numero, double valor){
+        Conta conta = repository.buscar(numero);
+        if(conta == null){
+            return false;
+        }
+        conta.creditar(valor);
+        return true;
+    }
 }
