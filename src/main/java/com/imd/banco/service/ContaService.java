@@ -18,4 +18,12 @@ public class ContaService {
     public Conta buscarConta(int numero){
         return repository.buscar(numero);
     }
+
+    public Double consultarSaldo(int numero){
+        Conta conta = repository.buscar(numero);
+        if(conta == null){
+            return null;
+        }
+        return conta.getSaldo();
+    }
 }
