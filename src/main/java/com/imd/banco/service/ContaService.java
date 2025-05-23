@@ -44,4 +44,17 @@ public class ContaService {
         conta.debitar(valor);
         return true;
     }
+
+    public boolean transferir(int origem, int destino, double valor){
+        Conta contaOrigem = repository.buscar(origem);
+        Conta contaDestino = repository.buscar(destino);
+
+        if(contaOrigem == null || contaDestino == null){
+            return false;
+        }
+
+        contaOrigem.debitar(valor);
+        contaDestino.creditar(valor);
+        return true;
+    }
 }
