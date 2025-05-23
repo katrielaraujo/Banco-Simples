@@ -35,4 +35,13 @@ public class ContaService {
         conta.creditar(valor);
         return true;
     }
+
+    public boolean debitar(int numero, double valor){
+        Conta conta = repository.buscar(numero);
+        if (conta == null){
+            return false;
+        }
+        conta.debitar(valor);
+        return true;
+    }
 }
