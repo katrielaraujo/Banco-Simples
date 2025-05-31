@@ -41,6 +41,10 @@ public class ContaService {
         if (conta == null){
             return false;
         }
+
+        if(conta.getSaldo() < valor){
+            return false; // Saldo insuficiente
+        }
         conta.debitar(valor);
         return true;
     }
@@ -51,6 +55,10 @@ public class ContaService {
 
         if(contaOrigem == null || contaDestino == null){
             return false;
+        }
+
+        if(contaOrigem.getSaldo() < valor){
+            return false; // Saldo insuficiente
         }
 
         contaOrigem.debitar(valor);
