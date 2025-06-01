@@ -1,17 +1,115 @@
 package com.imd.banco;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import com.imd.banco.service.ContaService;
+import com.imd.banco.model.ContaBonus;
+
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        ContaService contaService = new ContaService();
+        Scanner scanner = new Scanner(System.in);
+        boolean executando = true;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        while(executando){
+            System.out.println("\n====== BANCO INTERATIVO ======");
+            System.out.println("1 - Cadastrar Conta");
+            System.out.println("2 - Consultar Saldo");
+            System.out.println("3 - Credito");
+            System.out.println("4 - Debito");
+            System.out.println("5 - Transferencia");
+            System.out.println("6 - Render Juros (apenas contas poupanca)");
+            System.out.println("0 - Sair");
+            System.out.print("Escolha uma opcao: ");
+
+            int opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    System.out.print("Número da nova conta: ");
+                    int numeroConta = scanner.nextInt();
+                    scanner.nextLine();
+
+                    System.out.print("Deseja criar qual tipo de conta: bonus, poupanca ou simples? ");
+                    String tipo = scanner.nextLine();
+
+                    String tipoConta;
+                    
+                    if(tipo.equalsIgnoreCase("bonus")) {
+                        tipoConta = "bonus";
+                    } else if(tipo.equalsIgnoreCase("poupanca")) {
+                        tipoConta = "poupanca";
+                    } else {
+                        tipoConta = "simples";
+                    }
+
+                    if(contaService.cadastrarConta(numeroConta, tipoConta)){
+                        System.out.println("Conta "+ tipoConta + " cadastrada com sucesso!");
+                    }else {
+                        System.out.println("Erro ao cadastrar conta. Conta já existe.");
+                    }
+
+                    break;
+                case 2:
+                    System.out.print("Número da conta: ");
+                    int numConsulta = scanner.nextInt();
+                    Double saldo = contaService.consultarSaldo(numConsulta);
+                    if(saldo != null){
+                        System.out.printf("Saldo: R$ %.2f%n", saldo);
+                    }else {
+                        System.out.println("Conta não encontrada.");
+                    }
+                    break;
+                case 3:
+                    System.out.print("Número da conta: ");
+                    int numCredito = scanner.nextInt();
+                    System.out.print("Valor do crédito: ");
+                    double valorCredito = scanner.nextDouble();
+                    if(contaService.creditar(numCredito, valorCredito)){
+                        System.out.println("Crédito realizado com sucesso!");
+                    }else {
+                        System.out.println("Erro ao realizar crédito.");
+                    }
+                    break;
+                case 4:
+                    System.out.print("Número da conta: ");
+                    int numDebito = scanner.nextInt();
+                    System.out.print("Valor do débito: ");
+                    double valorDebito = scanner.nextDouble();
+                    if(contaService.debitar(numDebito, valorDebito)){
+                        System.out.println("Débito realizado com sucesso!");
+                    }else {
+                        System.out.println("Erro ao realizar débito.");
+                    }
+                    break;
+                case 5:
+                    System.out.print("Número da conta de origem: ");
+                    int numOrigem = scanner.nextInt();
+                    System.out.print("Número da conta de destino: ");
+                    int numDestino = scanner.nextInt();
+                    System.out.print("Valor da transferência: ");
+                    double valorTransferencia = scanner.nextDouble();
+                    if(contaService.transferir(numOrigem, numDestino, valorTransferencia)){
+                        System.out.println("Transferência realizada com sucesso!");
+                    }else {
+                        System.out.println("Erro ao realizar transferência.");
+                    }
+                    break;
+                case 6:
+                    System.out.println("Informe a taxa de juros (%): ");
+                    double taxa = scanner.nextDouble();
+                    contaService.renderJurosPoupanca(taxa);
+                    System.out.println("Juros aplicados às contas poupanca.");
+                    break;
+                case 0:
+                    executando = false;
+                    System.out.println("Saindo do sistema...");
+                    break;
+                default:
+                    System.out.println("Opção inválida! Tente novamente.");
+            }
         }
+
+        scanner.close();
     }
 }
