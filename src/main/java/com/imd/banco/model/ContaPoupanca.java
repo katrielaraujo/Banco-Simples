@@ -1,7 +1,5 @@
 package com.imd.banco.model;
 
-import com.imd.banco.model.Conta;
-
 public class ContaPoupanca extends Conta{
 
     public ContaPoupanca(int numero) {
