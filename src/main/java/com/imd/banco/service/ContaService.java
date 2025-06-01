@@ -9,7 +9,7 @@ public class ContaService {
     private final ContaRepository repository = new ContaRepository();
 
     public boolean cadastrarConta(int numero){
-        return cadastrarConta(numero,"simples");
+        return cadastrarConta(numero);
     }
 
     public boolean cadastrarConta(int numero, String tipo,double saldoInicial){
@@ -63,7 +63,11 @@ public class ContaService {
         if (valor < 0) return false;
 
         Conta conta = repository.buscar(numero);
-        if (conta == null || conta.getSaldo() < valor) return false;
+        if (conta == null) return false;
+
+        if((conta instanceof Conta || conta instanceof ContaBonus) && (conta.getSaldo() - valor < -1000)){
+            return false;
+        }
 
         conta.debitar(valor);
         return true;
@@ -77,7 +81,9 @@ public class ContaService {
 
         if(contaOrigem == null || contaDestino == null) return false;
 
-        if(contaOrigem.getSaldo() < valor) return false;
+        if((contaOrigem instanceof Conta || contaOrigem instanceof ContaBonus) && (contaOrigem.getSaldo() - valor < -1000)){
+            return false;
+        }
 
         contaOrigem.debitar(valor);
 

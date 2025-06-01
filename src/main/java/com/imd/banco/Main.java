@@ -1,7 +1,6 @@
 package com.imd.banco;
 
 import com.imd.banco.service.ContaService;
-import com.imd.banco.model.ContaBonus;
 
 import java.util.Scanner;
 
