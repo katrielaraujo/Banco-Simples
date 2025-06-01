@@ -15,11 +15,12 @@ public class Main {
             System.out.println("\n====== BANCO INTERATIVO ======");
             System.out.println("1 - Cadastrar Conta");
             System.out.println("2 - Consultar Saldo");
-            System.out.println("3 - Crédito");
-            System.out.println("4 - Débito");
-            System.out.println("5 - Transferência");
+            System.out.println("3 - Credito");
+            System.out.println("4 - Debito");
+            System.out.println("5 - Transferencia");
+            System.out.println("6 - Render Juros (apenas contas poupanca)");
             System.out.println("0 - Sair");
-            System.out.print("Escolha uma opção: ");
+            System.out.print("Escolha uma opcao: ");
 
             int opcao = scanner.nextInt();
 
@@ -29,10 +30,18 @@ public class Main {
                     int numeroConta = scanner.nextInt();
                     scanner.nextLine();
 
-                    System.out.print("Deseja criar uma Conta Bônus? (s/n): ");
+                    System.out.print("Deseja criar qual tipo de conta: bonus, poupanca ou simples? ");
                     String tipo = scanner.nextLine();
 
-                    String tipoConta = tipo.equalsIgnoreCase("s") ? "bonus" : "simples";
+                    String tipoConta;
+                    
+                    if(tipo.equalsIgnoreCase("bonus")) {
+                        tipoConta = "bonus";
+                    } else if(tipo.equalsIgnoreCase("poupanca")) {
+                        tipoConta = "poupanca";
+                    } else {
+                        tipoConta = "simples";
+                    }
 
                     if(contaService.cadastrarConta(numeroConta, tipoConta)){
                         System.out.println("Conta "+ tipoConta + " cadastrada com sucesso!");
@@ -85,6 +94,12 @@ public class Main {
                     }else {
                         System.out.println("Erro ao realizar transferência.");
                     }
+                    break;
+                case 6:
+                    System.out.println("Informe a taxa de juros (%): ");
+                    double taxa = scanner.nextDouble();
+                    contaService.renderJurosPoupanca(taxa);
+                    System.out.println("Juros aplicados às contas poupanca.");
                     break;
                 case 0:
                     executando = false;
