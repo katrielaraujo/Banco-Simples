@@ -1,6 +1,7 @@
 package com.imd.banco;
 
 import com.imd.banco.service.ContaService;
+import com.imd.banco.model.ContaBonus;
 
 import java.util.Scanner;
 
@@ -26,11 +27,19 @@ public class Main {
                 case 1:
                     System.out.print("Número da nova conta: ");
                     int numeroConta = scanner.nextInt();
-                    if(contaService.cadastrarConta(numeroConta)) {
-                        System.out.println("Conta cadastrada com sucesso!");
-                    } else {
-                        System.out.println("Conta já existe.");
+                    scanner.nextLine();
+
+                    System.out.print("Deseja criar uma Conta Bônus? (s/n): ");
+                    String tipo = scanner.nextLine();
+
+                    String tipoConta = tipo.equalsIgnoreCase("s") ? "bonus" : "simples";
+
+                    if(contaService.cadastrarConta(numeroConta, tipoConta)){
+                        System.out.println("Conta "+ tipoConta + " cadastrada com sucesso!");
+                    }else {
+                        System.out.println("Erro ao cadastrar conta. Conta já existe.");
                     }
+
                     break;
                 case 2:
                     System.out.print("Número da conta: ");
