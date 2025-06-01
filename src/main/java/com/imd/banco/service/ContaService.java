@@ -12,10 +12,9 @@ public class ContaService {
         return cadastrarConta(numero,"simples");
     }
 
-    public boolean cadastrarConta(int numero, String tipo){
-        if(repository.buscar(numero) != null){
-            return false;
-        }
+    public boolean cadastrarConta(int numero, String tipo,double saldoInicial){
+
+        if(repository.buscar(numero) != null) return false;
 
         Conta conta;
 
@@ -24,7 +23,7 @@ public class ContaService {
                 conta = new ContaBonus(numero);
                 break;
             case "poupanca":
-                conta = new ContaPoupanca(numero);
+                conta = new ContaPoupanca(numero, saldoInicial);
                 break;
             default:
                 conta = new Conta(numero);
