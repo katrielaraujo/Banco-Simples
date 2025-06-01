@@ -47,41 +47,47 @@ public class ContaService {
     }
 
     public boolean creditar(int numero, double valor){
+        if(valor < 0) return false;
+
         Conta conta = repository.buscar(numero);
-        if(conta == null){
-            return false;
+        if(conta == null)  return false;
+
+        if(conta instanceof ContaBonus){
+            ((ContaBonus) conta).creditar(valor);
         }
+
         conta.creditar(valor);
         return true;
     }
 
     public boolean debitar(int numero, double valor){
-        Conta conta = repository.buscar(numero);
-        if (conta == null){
-            return false;
-        }
+        if (valor < 0) return false;
 
-        if(conta.getSaldo() < valor){
-            return false; // Saldo insuficiente
-        }
+        Conta conta = repository.buscar(numero);
+        if (conta == null || conta.getSaldo() < valor) return false;
+
         conta.debitar(valor);
         return true;
     }
 
     public boolean transferir(int origem, int destino, double valor){
+        if (valor < 0) return false;
+        
         Conta contaOrigem = repository.buscar(origem);
         Conta contaDestino = repository.buscar(destino);
 
-        if(contaOrigem == null || contaDestino == null){
-            return false;
-        }
+        if(contaOrigem == null || contaDestino == null) return false;
 
-        if(contaOrigem.getSaldo() < valor){
-            return false; // Saldo insuficiente
-        }
+        if(contaOrigem.getSaldo() < valor) return false;
 
         contaOrigem.debitar(valor);
-        contaDestino.creditar(valor);
+
+        if(contaDestino instanceof ContaBonus){
+            ((ContaBonus) contaDestino).receberTransferencia(valor);
+        } else {
+            contaDestino.creditar(valor);
+        }
+        
         return true;
     }
 
