@@ -25,7 +25,7 @@ public class ContaBonus extends Conta{
 
     public void receberTransferencia(double valor){
         super.creditar(valor);
-        int pontosGanhos = (int) (valor / 200);
+        int pontosGanhos = (int) (valor / 150);
         adicionarPontos(pontosGanhos);
     }
 }
