@@ -9,10 +9,10 @@ public class ContaService {
     private final ContaRepository repository = new ContaRepository();
 
     public boolean cadastrarConta(int numero){
-        return cadastrarConta(numero,"simples");
+        return cadastrarConta(numero);
     }
 
-    public boolean cadastrarConta(int numero, String tipo){
+    public boolean cadastrarConta(int numero, String tipo,double saldoInicial){
         if(repository.buscar(numero) != null){
             return false;
         }
@@ -26,8 +26,12 @@ public class ContaService {
             case "poupanca":
                 conta = new ContaPoupanca(numero);
                 break;
-            default:
+            case "simples":
                 conta = new Conta(numero);
+                conta.creditar(0.0);
+                break;
+            default:
+                return false; // Tipo de conta inválido
         }
 
         repository.salvar(conta);
