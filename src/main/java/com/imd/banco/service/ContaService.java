@@ -1,16 +1,31 @@
 package com.imd.banco.service;
 
 import com.imd.banco.model.Conta;
+import com.imd.banco.model.ContaBonus;
 import com.imd.banco.repository.ContaRepository;
 
 public class ContaService {
     private final ContaRepository repository = new ContaRepository();
 
     public boolean cadastrarConta(int numero){
-        if(repository.existe(numero)){
+        return cadastrarConta(numero,"simples");
+    }
+
+    public boolean cadastrarConta(int numero, String tipo){
+        if(repository.buscar(numero) != null){
             return false;
         }
-        Conta conta = new Conta(numero);
+
+        Conta conta;
+
+        switch(tipo.toLowerCase()){
+            case "bonus":
+                conta = new ContaBonus(numero);
+                break;
+            default:
+                conta = new Conta(numero);
+        }
+
         repository.salvar(conta);
         return true;
     }
