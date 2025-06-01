@@ -2,6 +2,7 @@ package com.imd.banco.service;
 
 import com.imd.banco.model.Conta;
 import com.imd.banco.model.ContaBonus;
+import com.imd.banco.model.ContaPoupanca;
 import com.imd.banco.repository.ContaRepository;
 
 public class ContaService {
@@ -21,6 +22,9 @@ public class ContaService {
         switch(tipo.toLowerCase()){
             case "bonus":
                 conta = new ContaBonus(numero);
+                break;
+            case "poupanca":
+                conta = new ContaPoupanca(numero);
                 break;
             default:
                 conta = new Conta(numero);
@@ -79,5 +83,13 @@ public class ContaService {
         contaOrigem.debitar(valor);
         contaDestino.creditar(valor);
         return true;
+    }
+
+    public void renderJurosPoupanca(double taxa){
+        for (Conta conta : repository.listarTodas().values()) {
+            if (conta instanceof ContaPoupanca) {
+                ((ContaPoupanca) conta).renderJuros(taxa);
+            }
+        }
     }
 }
