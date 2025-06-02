@@ -6,6 +6,11 @@ public class ContaPoupanca extends Conta{
         super(numero);
     }
 
+    public ContaPoupanca(int numero, double saldoInicial){
+        super(numero);
+        this.creditar(saldoInicial);
+    }
+  
     public void renderJuros(double taxaPercentual){
         double saldo = getSaldo();
         double juros = saldo * (taxaPercentual/ 100.0);

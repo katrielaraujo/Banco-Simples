@@ -13,9 +13,8 @@ public class ContaService {
     }
 
     public boolean cadastrarConta(int numero, String tipo,double saldoInicial){
-        if(repository.buscar(numero) != null){
-            return false;
-        }
+
+        if(repository.buscar(numero) != null) return false;
 
         Conta conta;
 
@@ -24,11 +23,11 @@ public class ContaService {
                 conta = new ContaBonus(numero);
                 break;
             case "poupanca":
-                conta = new ContaPoupanca(numero);
+                conta = new ContaPoupanca(numero, saldoInicial);
                 break;
             case "simples":
                 conta = new Conta(numero);
-                conta.creditar(0.0);
+                conta.creditar(saldoInicial);
                 break;
             default:
                 return false; // Tipo de conta inválido
@@ -68,7 +67,12 @@ public class ContaService {
         if (valor < 0) return false;
 
         Conta conta = repository.buscar(numero);
-        if (conta == null || conta.getSaldo() < valor) return false;
+
+        if (conta == null) return false;
+
+        if((conta instanceof Conta || conta instanceof ContaBonus) && (conta.getSaldo() - valor < -1000)){
+            return false;
+        }
 
         conta.debitar(valor);
         return true;
@@ -82,7 +86,9 @@ public class ContaService {
 
         if(contaOrigem == null || contaDestino == null) return false;
 
-        if(contaOrigem.getSaldo() < valor) return false;
+        if((contaOrigem instanceof Conta || contaOrigem instanceof ContaBonus) && (contaOrigem.getSaldo() - valor < -1000)){
+            return false;
+        }
 
         contaOrigem.debitar(valor);
 

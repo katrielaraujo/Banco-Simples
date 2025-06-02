@@ -28,14 +28,14 @@ public class Main {
                     System.out.print("Número da nova conta: ");
                     int numeroConta = scanner.nextInt();
                     scanner.nextLine();
+                
+                    double saldoInicial = 0.0;
 
                     System.out.print("Deseja criar qual tipo de conta: bonus, poupanca ou simples? ");
                     String tipo = scanner.nextLine();
 
-                    double saldoInicial = 0.0;
-                    
-                    if(tipo.equalsIgnoreCase("simples")) {
-                        System.out.print("Informe o saldo inicial da conta: ");
+                    if(tipo.equalsIgnoreCase("poupanca")){
+                        System.out.print("Saldo inicial da conta "+ tipo + ": ");
                         saldoInicial = scanner.nextDouble();
                     }
 
