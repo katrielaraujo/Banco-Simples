@@ -25,8 +25,12 @@ public class ContaService {
             case "poupanca":
                 conta = new ContaPoupanca(numero, saldoInicial);
                 break;
-            default:
+            case "simples":
                 conta = new Conta(numero);
+                conta.creditar(saldoInicial);
+                break;
+            default:
+                return false; // Tipo de conta inválido
         }
 
         repository.salvar(conta);
@@ -63,6 +67,7 @@ public class ContaService {
         if (valor < 0) return false;
 
         Conta conta = repository.buscar(numero);
+
         if (conta == null) return false;
 
         if((conta instanceof Conta || conta instanceof ContaBonus) && (conta.getSaldo() - valor < -1000)){
