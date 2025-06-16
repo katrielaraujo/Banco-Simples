@@ -1,15 +1,19 @@
 package com.imd.banco.service;
 
+import org.springframework.stereotype.Service;
+
 import com.imd.banco.model.Conta;
 import com.imd.banco.model.ContaBonus;
 import com.imd.banco.model.ContaPoupanca;
 import com.imd.banco.repository.ContaRepository;
+import java.util.Collection;
 
+@Service
 public class ContaService {
-    private final ContaRepository repository = new ContaRepository();
+    private final ContaRepository repository;
 
-    public boolean cadastrarConta(int numero){
-        return cadastrarConta(numero);
+    public ContaService(ContaRepository repository){
+        this.repository = repository;
     }
 
     public boolean cadastrarConta(int numero, String tipo,double saldoInicial){
@@ -41,12 +45,13 @@ public class ContaService {
         return repository.buscar(numero);
     }
 
+    public Collection<Conta> listarTodasAsContas(){
+        return repository.listarTodas();
+    }
+
     public Double consultarSaldo(int numero){
         Conta conta = repository.buscar(numero);
-        if(conta == null){
-            return null;
-        }
-        return conta.getSaldo();
+        return (conta != null) ? conta.getSaldo() : null;
     }
 
     public boolean creditar(int numero, double valor){
@@ -55,11 +60,12 @@ public class ContaService {
         Conta conta = repository.buscar(numero);
         if(conta == null)  return false;
 
-        if(conta instanceof ContaBonus){
-            ((ContaBonus) conta).creditar(valor);
+        if(conta instanceof ContaBonus cb){
+            cb.creditar(valor);
+        } else {
+            conta.creditar(valor);
         }
-
-        conta.creditar(valor);
+        
         return true;
     }
 
@@ -92,8 +98,8 @@ public class ContaService {
 
         contaOrigem.debitar(valor);
 
-        if(contaDestino instanceof ContaBonus){
-            ((ContaBonus) contaDestino).receberTransferencia(valor);
+        if(contaDestino instanceof ContaBonus cb){
+            cb.receberTransferencia(valor);
         } else {
             contaDestino.creditar(valor);
         }
@@ -102,9 +108,9 @@ public class ContaService {
     }
 
     public void renderJurosPoupanca(double taxa){
-        for (Conta conta : repository.listarTodas().values()) {
-            if (conta instanceof ContaPoupanca) {
-                ((ContaPoupanca) conta).renderJuros(taxa);
+        for (Conta conta : repository.listarTodas()) {
+            if (conta instanceof ContaPoupanca cp) {
+                cp.renderJuros(taxa);
             }
         }
     }
