@@ -1,0 +1,59 @@
+name: 📦 CI/CD - Staging RC Tag & Package
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build-test-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v3
+
+      - name: ☕ Instalar Java 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 📦 Resolver dependências e compilar
+        run: mvn clean compile
+
+      - name: 🧪 Rodar testes
+        run: mvn test
+
+      - name: 🔍 Análise estática com PMD
+        run: mvn pmd:pmd
+
+      - name: 🏷️ Criar nova tag RC automática
+        run: |
+          TAG=$(git tag | grep rc- | sort -V | tail -n 1)
+          echo "Última tag: $TAG"
+          if [[ $TAG =~ rc-([0-9]+)\.([0-9]+) ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            NEW_TAG="rc-$MAJOR.$((MINOR+1))"
+          else
+            NEW_TAG="rc-1.0"
+          fi
+          echo "Nova tag: $NEW_TAG"
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+          git tag "$NEW_TAG"
+          git push origin "$NEW_TAG"
+          echo "TAG_NAME=$NEW_TAG" >> $GITHUB_ENV
+
+      - name: 📁 Criar pacote ZIP
+        run: |
+          mkdir -p dist
+          cp -r src pom.xml README.md dist/
+          zip -r ${{ env.TAG_NAME }}.zip dist/
+
+      - name: 📤 Enviar pacote como Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.TAG_NAME }}
+          path: ${{ env.TAG_NAME }}.zip
