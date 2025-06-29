@@ -53,7 +53,7 @@ jobs:
           zip -r ${{ env.TAG_NAME }}.zip dist/
 
       - name: 📤 Enviar pacote como Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.TAG_NAME }}
           path: ${{ env.TAG_NAME }}.zip
